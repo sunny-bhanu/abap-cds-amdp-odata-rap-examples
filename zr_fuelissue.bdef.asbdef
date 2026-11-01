@@ -1,0 +1,81 @@
+managed implementation in class zbp_r_fuelissue unique;
+strict ( 2 );
+with draft;
+
+define behavior for ZR_FuelIssue alias FuelIssue
+persistent table zfuel_hdr
+draft table zfuel_hdr_d
+etag master LastChangedAt
+lock master total etag LastChangedAt
+authorization master ( instance )
+early numbering
+{
+  field ( readonly ) FuelIssueId, CreatedBy, CreatedAt, LastChangedBy, LastChangedAt,
+                     Status, GoodsMovementDoc;
+  field ( mandatory ) Plant, IssueDate;
+
+  create;
+  update;
+  delete;
+
+  // Business logic
+  determination setInitialStatus on modify { create; }
+  validation    validatePlant     on save   { field Plant; create; }
+  validation    validateQuantity  on save   { field TotalQuantity; }
+
+  // Post goods issue (mvt 261) through released API — only in status 'New'
+  action ( features : instance ) post result [1] $self;
+
+  association _Item { create; with draft; }
+
+  draft action Edit;
+  draft action Activate optimized;
+  draft action Discard;
+  draft action Resume;
+  draft determine action Prepare { validation validatePlant; validation validateQuantity; }
+
+  mapping for zfuel_hdr
+  {
+    FuelIssueId      = fuel_id;
+    Plant            = werks;
+    IssueDate        = issue_date;
+    TotalQuantity    = total_qty;
+    Status           = status;
+    GoodsMovementDoc = mblnr;
+    CreatedBy        = created_by;
+    CreatedAt        = created_at;
+    LastChangedBy    = last_changed_by;
+    LastChangedAt    = last_changed_at;
+  }
+}
+
+define behavior for ZR_FuelIssueItem alias FuelIssueItem
+persistent table zfuel_itm
+draft table zfuel_itm_d
+etag dependent by _Header
+lock dependent by _Header
+authorization dependent by _Header
+early numbering
+{
+  field ( readonly ) FuelIssueId, FuelIssueItemNo;
+  field ( mandatory ) Equipment, Quantity;
+
+  update;
+  delete;
+
+  determination determineMaintOrder on modify { field Equipment; }
+  validation    validateCounters    on save   { field CounterStart, CounterEnd; }
+
+  association _Header { with draft; }
+
+  mapping for zfuel_itm
+  {
+    FuelIssueId     = fuel_id;
+    FuelIssueItemNo = item_no;
+    Equipment       = equnr;
+    MaintOrder      = aufnr;
+    Quantity        = qty;
+    CounterStart    = cnt_start;
+    CounterEnd      = cnt_end;
+  }
+}
