@@ -26,7 +26,6 @@ define view entity ZI_SalesOrder_NetValue
       @Semantics.amount.currencyCode: 'TransactionCurrency'
       Item.NetAmount,
 
-      @Semantics.currencyCode: true
       Item.TransactionCurrency,
 
       _Header.SoldToParty,

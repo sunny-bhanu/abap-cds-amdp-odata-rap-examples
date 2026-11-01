@@ -65,7 +65,9 @@ CLASS lhc_fuelissue IMPLEMENTATION.
           APPEND VALUE #( %cid = ls_entity-%cid %is_draft = ls_entity-%is_draft )
                  TO failed-fuelissue.
           APPEND VALUE #( %cid = ls_entity-%cid %is_draft = ls_entity-%is_draft
-                          %msg = lx_nr ) TO reported-fuelissue.
+                          %msg = new_message_with_text(
+                                   severity = if_abap_behv_message=>severity-error
+                                   text     = lx_nr->get_text( ) ) ) TO reported-fuelissue.
       ENDTRY.
     ENDLOOP.
   ENDMETHOD.
