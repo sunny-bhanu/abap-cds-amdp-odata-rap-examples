@@ -33,7 +33,7 @@ define view entity ZI_SalesOrder_NetValue
       _Header.SalesOrganization,
       _Header.CreationDate,
 
-      // Derived classification — CASE expression
+      // Derived classification - CASE expression
       case
         when Item.NetAmount >= 100000 then 'A'
         when Item.NetAmount >=  10000 then 'B'

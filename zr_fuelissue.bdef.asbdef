@@ -23,7 +23,7 @@ early numbering
   validation    validatePlant     on save   { field Plant; create; }
   validation    validateQuantity  on save   { field TotalQuantity; }
 
-  // Post goods issue (mvt 261) through released API — only in status 'New'
+  // Post goods issue (mvt 261) through released API - only in status 'New'
   action ( features : instance ) post result [1] $self;
 
   association _Item { create; with draft; }

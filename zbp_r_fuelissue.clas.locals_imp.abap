@@ -50,7 +50,7 @@ CLASS lhc_fuelissue IMPLEMENTATION.
 
 
   METHOD earlynumbering_create.
-    " Number range object ZFUEL, interval 01 — read through the released
+    " Number range object ZFUEL, interval 01 - read through the released
     " API cl_numberrange_runtime rather than NUMBER_GET_NEXT.
     LOOP AT entities INTO DATA(ls_entity) WHERE FuelIssueId IS INITIAL.
       TRY.
